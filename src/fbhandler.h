@@ -2,8 +2,20 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <FirebaseESP32.h>
-#include <addons/TokenHelper.h>
+
+#ifndef RTDBHELPER_H
+#define RTDBHELPER_H  
+
 #include <addons/RTDBHelper.h>
+
+#endif // RTDBHELPER_H
+
+#ifndef TOKENHELPER_H
+#define TOKENHELPER_H  
+
+#include <addons/TokenHelper.h>
+
+#endif // TOKENHELPER_H
 
 typedef struct
 {

@@ -1,7 +1,8 @@
 #include "fbhandler.h"
 
 FbHandler::FbHandler(String api_key,String database_url,String user_email,String user_password)
-: _api_key(api_key), _database_url(database_url), _user_email(user_email), _user_password(user_password)
+: _api_key(api_key), _database_url(database_url), 
+_user_email(user_email), _user_password(user_password)
 {
     
 }
@@ -19,9 +20,10 @@ bool FbHandler::begin()
      Firebase.setDoubleDigits(5);
 
 
+    return true;
 }
 
-String FbHandler::JSONFormater(DataTelur_t data)
+String FbHandler::JSONFormater(DataTelur_t send_data)
 {
     char buffer[512];
     sprintf(buffer,
@@ -30,8 +32,8 @@ String FbHandler::JSONFormater(DataTelur_t data)
             "\"Telur_Besar\": %d,"
             "\"Jumlah_Telur\": %d"
             "}",
-            data.telur_kecil, data.telur_besar,
-            data.jumlah_telur);
+            send_data.telur_kecil, send_data.telur_besar,
+            send_data.jumlah_telur);
 
     return String(buffer);
 }
@@ -54,7 +56,7 @@ bool FbHandler::setData(String msg)
     return _setdata;
 }
 
-bool FbHandler::getData(int &data)
+bool FbHandler::getData(int &data_get)
 {
     bool _getData = Firebase.getInt(_fbdo, F(_prefix_get_data.c_str()));
 
@@ -65,8 +67,8 @@ bool FbHandler::getData(int &data)
     }
     else
     {
-        data = _fbdo.to<int>();
-        Serial.printf("Get data : %d\n",data);
+        data_get = _fbdo.to<int>();
+        Serial.printf("Get data : %d\n",data_get);
     }
 
     return _getData;
