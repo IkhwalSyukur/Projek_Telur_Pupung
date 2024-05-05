@@ -6,6 +6,7 @@
 #include <addons/TokenHelper.h>
 #include <addons/RTDBHelper.h>
 
+// void fb_task (void *pvParameter);
 typedef struct
 {
     int telur_kecil;
@@ -20,10 +21,11 @@ public:
     FbHandler(String api_key, String database_url, String user_email, String user_password);
     bool begin();
     String JSONFormater(DataTelur_t data);
-
-private:
     bool setData(String msg);
     bool getData(int &data);
+
+private:
+    
 
     void task_func();
     static void static_task_func(void *pvParameter);
@@ -44,6 +46,7 @@ FbHandler::FbHandler(String api_key, String database_url, String user_email, Str
 {
 }
 
+
 bool FbHandler::begin()
 {
     _config.api_key = _api_key;
@@ -55,6 +58,8 @@ bool FbHandler::begin()
     _fbdo.setBSSLBufferSize(4096, 1024);
     Firebase.begin(&_config, &_auth);
     Firebase.setDoubleDigits(5);
+
+    // xTaskCreate(fb_task,"Firebase Handler", 1024, NULL, 1, NULL);
 
     return true;
 }
