@@ -68,9 +68,9 @@ bool FbHandler::JSONFormater(DataTelur_t data)
     char buffer[512];
     sprintf(buffer,
             "{"
-            "\"Telur_Kecil\": %d,"
-            "\"Telur_Besar\": %d,"
-            "\"Jumlah_Telur\": %d"
+            "Telur_Kecil: %d,"
+            "Telur_Besar: %d,"
+            "Jumlah_Telur: %d"
             "}",
             data.telur_kecil, data.telur_besar,
             data.jumlah_telur);
