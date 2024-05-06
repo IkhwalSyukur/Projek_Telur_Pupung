@@ -51,7 +51,7 @@ void loop(){
     telurParam.telur_besar = 5;
     telurParam.telur_kecil = 5;
 
-    myfb.JSONFormater(telurParam);
+    myfb.JSONFormater(telurParam); //baru
 
     delay(1000);
 }
