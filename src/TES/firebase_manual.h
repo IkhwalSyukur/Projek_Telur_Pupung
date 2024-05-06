@@ -47,23 +47,16 @@ void setup()
   Serial.println();
 
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
-
   config.api_key = API_KEY;
-
   auth.user.email = USER_EMAIL;
   auth.user.password = USER_PASSWORD;
-
   config.database_url = DATABASE_URL;
-
   config.token_status_callback = tokenStatusCallback; 
-
   Firebase.reconnectNetwork(true);
-
-  fbdo.setBSSLBufferSize(4096 /* Rx buffer size in bytes from 512 - 16384 */, 1024 /* Tx buffer size in bytes from 512 - 16384 */);
-
+  fbdo.setBSSLBufferSize(4096,102);
   Firebase.begin(&config, &auth);
-
   Firebase.setDoubleDigits(5);
+
 
 }
 

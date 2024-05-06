@@ -1,8 +1,9 @@
-// #define UNIT_TEST
+#define UNIT_TEST
 
 #ifdef UNIT_TEST
 
-#include "TES/firebase_manual.h"
+// #include "TES/firebase_manual.h"
+#include "main_app.h"
 
 #else
 #include <Arduino.h>
@@ -38,7 +39,7 @@ void setup(){
     Serial.println();
 
     myfb.begin();
-    xTaskCreate(fb_task, "Firebase Task Handler", 1024*1, NULL, 1, NULL);
+    xTaskCreate(fb_task, "Task Firebase", 1024 * 4, NULL, 1, NULL);
 }
 
 void loop(){
@@ -69,7 +70,7 @@ void fb_task(void *pvParameter){
         Telur_Besar_Value++;
         Jumlah_Telur_Value++;
 
-        vTaskDelay(2000);
+        vTaskDelay(15000);
     }
 }
 
