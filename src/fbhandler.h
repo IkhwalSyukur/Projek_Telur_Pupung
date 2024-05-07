@@ -23,12 +23,16 @@ public:
     bool JSONFormater(DataTelur_t data);
     bool setData(String msg);
     bool getData(int &data);
+    void isDataChange(bool state){
+        _isValueChange = state;
+    };
 
 private:
     void task_func();
     static void static_task_func(void *pvParam);
     String _bufferMsg = "";
     int _interval;
+    bool _isValueChange = false;
 
     String _api_key;
     String _database_url;
@@ -65,6 +69,8 @@ bool FbHandler::begin(int interval)
 
 bool FbHandler::JSONFormater(DataTelur_t data)
 {
+
+
     char buffer[512];
     sprintf(buffer,
             "{"
@@ -81,7 +87,7 @@ bool FbHandler::JSONFormater(DataTelur_t data)
 
 bool FbHandler::setData(String msg)
 {
-
+    
     bool _setdata = Firebase.setString(_fbdo, _prefix_monitoring.c_str(), msg.c_str());
     // bool _setdata = Firebase.setString(_fbdo, _prefix_monitoring.c_str(), "halooou");
 
@@ -144,10 +150,13 @@ void FbHandler::task_func()
         }
         else
         {
+            if(_isValueChange){
             this->setData(_bufferMsg);
             Serial.printf("Sending msg buffer: %s\n", _bufferMsg.c_str());
+            _isValueChange = false;
+            }
         }
-        vTaskDelay(_interval);
+        // vTaskDelay(_interval);
     }
     vTaskDelete(NULL);
 }

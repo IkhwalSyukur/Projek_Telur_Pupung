@@ -1,8 +1,9 @@
-// #define UNIT_TEST
+#define UNIT_TEST
 
 #ifdef UNIT_TEST
 
 // #include "TES/firebase_manual.h"
+// #include "TES/tes_callback.h"
 #include "main_app.h"
 
 #else

@@ -29,6 +29,25 @@ int jumlah_telur_besar;
 int jumlah_telur_kecil;
 int total_telur;
 
+void getFirebaseData() {
+  if (Firebase.get(fbdo, "/Ubah_Ukuran_Telur")) {
+    if (fbdo.dataType() == "int") {
+      int value = fbdo.intData();
+      Serial.println("Initial Value: " + String(value));
+    }
+  } else {
+    Serial.println("Failed to get data from Firebase");
+  }
+}
+
+// Callback function for onDataChange events
+void onDataChangedCallback(StreamData data) {
+  if (data.dataType() == "int" && data.dataPath() == "/Ubah_Ukuran_Telur") {
+    int value = data.intData();
+    Serial.println("Data changed! New value: " + String(value));
+  }
+}
+
 void setup()
 {
 
@@ -56,49 +75,56 @@ void setup()
   fbdo.setBSSLBufferSize(4096,102);
   Firebase.begin(&config, &auth);
   Firebase.setDoubleDigits(5);
+  // Firebase.beginStream(fbdo,"/Ubah_Ukuran_Telur");
 
+  Firebase.setStreamCallback(fbdo, onDataChangedCallback, 0);
+  getFirebaseData();
 
 }
 
 void loop()
 {
 
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
-  {
-    sendDataPrevMillis = millis();
-    unsigned long timestamp = millis();
+  Firebase.runStream();
+  
 
-    // String dataJTB = String(jumlah_telur_besar);
-    // String dataJTK = String(jumlah_telur_kecil);
-    // String dataTotal = String(total_telur);
+  // if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
+  // {
+  //   sendDataPrevMillis = millis();
+  //   unsigned long timestamp = millis();
 
-    String pathJTB = "/Monitoring/jumlah_telur_besar";
-    String pathJTK = "/Monitoring/jumlah_telur_kecil";
-    String pathTotal = "/Monitoring/jumlah_total_telur";
+  //   // String dataJTB = String(jumlah_telur_besar);
+  //   // String dataJTK = String(jumlah_telur_kecil);
+  //   // String dataTotal = String(total_telur);
 
-    String pathHistoryJTB = "/History/" + String(timestamp) + "/jumlah_telur_besar";
-    String pathHistoryTotal = "/History/" + String(timestamp) + "/Total_telur";
+  //   String pathJTB = "/Monitoring/jumlah_telur_besar";
+  //   String pathJTK = "/Monitoring/jumlah_telur_kecil";
+  //   String pathTotal = "/Monitoring/jumlah_total_telur";
 
-    Serial.printf("Set data at path %s: %s\n", pathJTB.c_str(), Firebase.setInt(fbdo, pathJTB.c_str(), jumlah_telur_besar) ? "ok" : fbdo.errorReason().c_str());
-    Serial.printf("Set data at path %s: %s\n", pathJTK.c_str(), Firebase.setInt(fbdo, pathJTK.c_str(), jumlah_telur_kecil) ? "ok" : fbdo.errorReason().c_str());
-    Serial.printf("Set data at path %s: %s\n", pathTotal.c_str(), Firebase.setInt(fbdo, pathTotal.c_str(), total_telur) ? "ok" : fbdo.errorReason().c_str());
+  //   String pathHistoryJTB = "/History/" + String(timestamp) + "/jumlah_telur_besar";
+  //   String pathHistoryTotal = "/History/" + String(timestamp) + "/Total_telur";
 
-    // Serial.printf("Set data at path %s: %s\n", pathHistoryJTB.c_str(), Firebase.setInt(fbdo, pathHistoryJTB.c_str(), jumlah_telur_besar) ? "ok" : fbdo.errorReason().c_str());
-    // Serial.printf("Set data at path %s: %s\n", pathHistoryJTK.c_str(), Firebase.setInt(fbdo, pathHistoryJTK.c_str(), jumlah_telur_kecil) ? "ok" : fbdo.errorReason().c_str());
-    // Serial.printf("Set data at path %s: %s\n", pathHistoryTotal.c_str(), Firebase.setInt(fbdo, pathHistoryTotal.c_str(), total_telur) ? "ok" : fbdo.errorReason().c_str());
+  //   Serial.printf("Set data at path %s: %s\n", pathJTB.c_str(), Firebase.setInt(fbdo, pathJTB.c_str(), jumlah_telur_besar) ? "ok" : fbdo.errorReason().c_str());
+  //   Serial.printf("Set data at path %s: %s\n", pathJTK.c_str(), Firebase.setInt(fbdo, pathJTK.c_str(), jumlah_telur_kecil) ? "ok" : fbdo.errorReason().c_str());
+  //   Serial.printf("Set data at path %s: %s\n", pathTotal.c_str(), Firebase.setInt(fbdo, pathTotal.c_str(), total_telur) ? "ok" : fbdo.errorReason().c_str());
+
+  //   // Serial.printf("Set data at path %s: %s\n", pathHistoryJTB.c_str(), Firebase.setInt(fbdo, pathHistoryJTB.c_str(), jumlah_telur_besar) ? "ok" : fbdo.errorReason().c_str());
+  //   // Serial.printf("Set data at path %s: %s\n", pathHistoryJTK.c_str(), Firebase.setInt(fbdo, pathHistoryJTK.c_str(), jumlah_telur_kecil) ? "ok" : fbdo.errorReason().c_str());
+  //   // Serial.printf("Set data at path %s: %s\n", pathHistoryTotal.c_str(), Firebase.setInt(fbdo, pathHistoryTotal.c_str(), total_telur) ? "ok" : fbdo.errorReason().c_str());
 
 
-    Serial.printf("Get int telur besar atas %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_besar/nilai_atas")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
-    Serial.printf("Get int telur besar bawah %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_besar/nilai_bawah")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
-    Serial.printf("Get int telur kecil atas %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_kecil/nilai_atas")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
-    Serial.printf("Get int telur kecil bawah %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_kecil/nilai_bawah")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
+  //   Serial.printf("Get int telur besar atas %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_besar/nilai_atas")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
+  //   Serial.printf("Get int telur besar bawah %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_besar/nilai_bawah")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
+  //   Serial.printf("Get int telur kecil atas %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_kecil/nilai_atas")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
+  //   Serial.printf("Get int telur kecil bawah %s\n", Firebase.getInt(fbdo, F("/Ubah_ukuran_telur/telur_kecil/nilai_bawah")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
 
-    // Serial.printf("Set string... %s\n", Firebase.setString(fbdo, F("/test/string"), "Hello World!") ? "ok" : fbdo.errorReason().c_str());
+  //   // Serial.printf("Set string... %s\n", Firebase.setString(fbdo, F("/test/string"), "Hello World!") ? "ok" : fbdo.errorReason().c_str());
 
-    // Serial.printf("Get string... %s\n", Firebase.getString(fbdo, F("/test/string")) ? fbdo.to<const char *>() : fbdo.errorReason().c_str());
-    total_telur++;
-    Serial.println();
+  //   // Serial.printf("Get string... %s\n", Firebase.getString(fbdo, F("/test/string")) ? fbdo.to<const char *>() : fbdo.errorReason().c_str());
+  //   total_telur++;
+  //   Serial.println();
 
-    count++;
-  }
+  //   count++;
+  // }
 }
+
